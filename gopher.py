@@ -4,7 +4,7 @@ import os
 def request(r, ip, port):
     print("Gopher: Received: " + str(r))
     rep = ''
-    if str(r) == '\r\n' or str(r) == '\n':
+    if str(r) == '\r\n':
         for l in os.scandir():
             if l.is_file():
                 rep += "0" + l.name + '\t' + l.path + '\t' + ip + '\t' + port + '\n'
