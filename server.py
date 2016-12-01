@@ -30,5 +30,5 @@ while True:
     with conn:
         print('Connected by', addr)
         data = conn.recv(1024)
-        conn.sendall(gopher.request(data.decode(), 'localhost', sys.argv[1]).encode())
+        conn.sendall(gopher.request(data.decode(), 'localhost', sys.argv[1]))
         conn.close()
