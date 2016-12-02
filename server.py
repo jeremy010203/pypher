@@ -1,34 +1,16 @@
-import socket
+import socketserver
 import sys
 import gopher
 
-HOST = 'localhost'               # Symbolic name meaning all available interfaces
-PORT = sys.argv[1]         # Arbitrary non-privileged port
-s = None
-for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC,
-                              socket.SOCK_STREAM, 0, socket.AI_PASSIVE):
-    af, socktype, proto, canonname, sa = res
-    try:
-        s = socket.socket(af, socktype, proto)
-    except OSError as msg:
-        s = None
-        continue
-    try:
-        s.bind(sa)
-        s.listen(1)
-    except OSError as msg:
-        s.close()
-        s = None
-        continue
-    break
-if s is None:
-    print('could not open socket')
-    sys.exit(1)
+HOST = 'localhost'
+PORT = sys.argv[1]
 
-while True:
-    conn, addr = s.accept()
-    with conn:
-        print('Connected by', addr)
-        data = conn.recv(1024)
-        conn.sendall(gopher.request(data.decode(), 'localhost', sys.argv[1]))
-        conn.close()
+class MyTCPHandler(socketserver.BaseRequestHandler):
+    def handle(self):
+        self.data = self.request.recv(1024).strip()
+        print("{} wrote:".format(self.client_address[0]))
+        print(self.data)
+        self.request.sendall(gopher.request(self.data, HOST, PORT))
+
+server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
+server.serve_forever()
