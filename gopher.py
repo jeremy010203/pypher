@@ -1,26 +1,29 @@
 import sys
 import os
 
+def file_type(f):
+    if f.is_file():
+        return "0"
+    elif f.is_dir():
+        return "1"
+    else:
+        return "3"
+
+def scandir(dr, ip, port):
+    r = ''
+    for l in os.scandir(dr):
+        r += "{}{}\t{}\t{}\t{}\n".format(file_type(l), l.name, l.path, ip, str(port))
+    return r + '.'
+
+def read_file(r):
+    with open(r, 'rb') as f:
+        return f.read() + b'\n.'
+
 def request(r, ip, port):
-    rep = ''
     if str(r) == '\r\n':
-        for l in os.scandir():
-            if l.is_file():
-                rep += "0" + l.name + '\t' + l.path + '\t' + ip + '\t' + str(port) + '\n'
-            elif l.is_dir():
-                rep += "1" + l.name + '\t' + l.path + '\t' + ip + '\t' + str(port) + '\n'
-        return (rep + '.').encode()
+        return scandir('.', ip, port).encode()
     else:
         if os.path.exists(r):
-            if os.path.isfile(r):
-                with open(r, 'rb') as f:
-                    return f.read() + b'\n.'
-            else:
-                for l in os.scandir(r):
-                    if l.is_file():
-                        rep += "0" + l.name + '\t' + l.path + '\t' + ip + '\t' + str(port) + '\n'
-                    elif l.is_dir():
-                        rep += "1" + l.name + '\t' + l.path + '\t' + ip + '\t' + str(port) + '\n'
-                return (rep + '.').encode()
+            return read_file(r) if os.path.isfile(r) else scandir(r, ip, port).encode()
         else:
             return b'Error'
