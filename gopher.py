@@ -2,14 +2,13 @@ import sys
 import os
 
 def request(r, ip, port):
-    print("Gopher: Received: " + str(r))
     rep = ''
     if str(r) == '\r\n':
         for l in os.scandir():
             if l.is_file():
-                rep += "0" + l.name + '\t' + l.path + '\t' + ip + '\t' + port + '\n'
-            if l.is_dir():
-                rep += "1" + l.name + '\t' + l.path + '\t' + ip + '\t' + port + '\n'
+                rep += "0" + l.name + '\t' + l.path + '\t' + ip + '\t' + str(port) + '\n'
+            elif l.is_dir():
+                rep += "1" + l.name + '\t' + l.path + '\t' + ip + '\t' + str(port) + '\n'
         return (rep + '.').encode()
     else:
         if os.path.exists(r):
@@ -19,9 +18,9 @@ def request(r, ip, port):
             else:
                 for l in os.scandir(r):
                     if l.is_file():
-                        rep += "0" + l.name + '\t' + l.path + '\t' + ip + '\t' + port + '\n'
-                    if l.is_dir():
-                        rep += "1" + l.name + '\t' + l.path + '\t' + ip + '\t' + port + '\n'
+                        rep += "0" + l.name + '\t' + l.path + '\t' + ip + '\t' + str(port) + '\n'
+                    elif l.is_dir():
+                        rep += "1" + l.name + '\t' + l.path + '\t' + ip + '\t' + str(port) + '\n'
                 return (rep + '.').encode()
         else:
             return b'Error'

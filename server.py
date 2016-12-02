@@ -3,14 +3,14 @@ import sys
 import gopher
 
 HOST = 'localhost'
-PORT = sys.argv[1]
+PORT = int(sys.argv[1])
 
 class MyTCPHandler(socketserver.BaseRequestHandler):
     def handle(self):
-        self.data = self.request.recv(1024).strip()
+        self.data = self.request.recv(1024)
         print("{} wrote:".format(self.client_address[0]))
         print(self.data)
-        self.request.sendall(gopher.request(self.data, HOST, PORT))
+        self.request.sendall(gopher.request(self.data.decode(), HOST, PORT))
 
 server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
 server.serve_forever()
