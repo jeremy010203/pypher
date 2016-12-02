@@ -10,13 +10,11 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     def handle(self):
         self.data = self.request.recv(1024)
         print("{} wrote: {}".format(self.client_address[0], self.data))
-        rep = self.data.decode()
+        rep = gopher.html_to_gopher(self.data.decode())
 
         with mysock.get_socket(HOST, SERVER_IP) as s:
-            print('Sending ' + '.' + rep.split(' ')[1])
-            s.sendall(b'.' + rep.split(' ')[1].encode())
+            s.sendall(rep)
             d = s.recv(1024)
-            print('Received ' + d.decode())
             self.request.sendall(d)
 
 server = socketserver.TCPServer((HOST, PROXY_IP), MyTCPHandler)

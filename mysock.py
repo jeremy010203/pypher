@@ -1,3 +1,5 @@
+import socket, sys
+
 def get_socket(ip, po):
     s = None
 

@@ -27,3 +27,6 @@ def request(r, ip, port):
             return read_file(r) if os.path.isfile(r) else scandir(r, ip, port).encode()
         else:
             return b'Error'
+
+def html_to_gopher(r):
+    return b'.' + r.split(' ')[1].encode()
