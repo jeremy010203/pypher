@@ -30,3 +30,9 @@ def request(r, ip, port):
 
 def html_to_gopher(r):
     return b'.' + r.split(' ')[1].encode()
+
+def gopher_to_html(r):
+    lines = r.split('\n')
+    rep = ""
+    for line in lines:
+        rep += "<a href='" + line.split('\t')[2] + "'>" + line.split('\t')[1] + "</a>"

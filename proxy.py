@@ -15,7 +15,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         with mysock.get_socket(HOST, SERVER_IP) as s:
             s.sendall(rep)
             d = s.recv(1024)
-            self.request.sendall(d)
+            self.request.sendall(gopher.gopher_to_html(d.decode()).encode())
 
 server = socketserver.TCPServer((HOST, PROXY_IP), MyTCPHandler)
 server.serve_forever()
